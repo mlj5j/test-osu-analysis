@@ -47,6 +47,12 @@ ANALYSIS_REF_CLONES: dict[str, list[tuple[str, str]]] = {
     ],
 }
 
+# Group-wide read-only references (not tied to one analysis), cloned into the
+# root references/ directory. See references/README.md.
+ROOT_REF_CLONES: list[tuple[str, str]] = [
+    ("git@github.com:OSU-CMS/OSU-Agentic-Analysis.git", "references/OSU-Agentic-Analysis"),
+]
+
 
 def discover_analyses() -> list[str]:
     return sorted(
@@ -157,6 +163,9 @@ def setup_analyses() -> list[str]:
     if not analyses:
         print("No analysis directories with a CLAUDE.md found.")
         return []
+
+    for url, rel_dest in ROOT_REF_CLONES:
+        clone_if_missing(url, ROOT / rel_dest)
 
     print("\nAnalyses available:", ", ".join(analyses))
     chosen = input("Which do you want to set up? (comma-separated, or 'all') ").strip()

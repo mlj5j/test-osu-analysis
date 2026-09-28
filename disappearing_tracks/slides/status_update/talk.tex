@@ -1,0 +1,167 @@
+% Disappearing-tracks talk template (Beamer, 16:9, 12pt).
+%
+% Layout follows the group's earlier approval talk (EXO-19-010): section
+% navigation bar in the footer, a source tag on each result slide, and a
+% "Since <last review>" call-out. Adapted for slides built from DisappTrks_Nano
+% output; see ../SKILL.md ("Conventions from the previous iteration").
+%
+% Every placeholder is marked TODO. Nothing here is a result: numbers, figures, and
+% author/logo material must come from real outputs or the presenter. Group logos
+% are NOT included -- add the approved files yourself (see \titlegraphic below).
+%
+% Build:  latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build talk.tex
+% Copy this file into <deck>/, point \graphicspath and \input at your figures/tables.
+\documentclass[aspectratio=169,12pt]{beamer}
+
+\usetheme{default}
+\usecolortheme{default}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\graphicspath{{../figures/}}
+
+% ------------------------------------------------------------------ colors
+\definecolor{navbar}{RGB}{23,73,127}      % footer bar
+\definecolor{sourcegreen}{RGB}{40,160,40} % source tag
+\definecolor{sincered}{RGB}{200,30,30}    % "since last review" box
+\setbeamercolor{frametitle}{fg=black,bg=white}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamercolor{section in head/foot}{fg=white,bg=navbar}
+\setbeamercolor{title in head/foot}{fg=white,bg=black}
+\setbeamercolor{structure}{fg=navbar}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+
+% ------------------------------------------------------- footer: section nav
+% Section names come from \section{...}; the current one is highlighted.
+\setbeamertemplate{footline}{%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=.55\paperwidth,ht=3ex,dp=1.2ex,left]{section in head/foot}%
+      \hspace*{1em}\insertsectionnavigationhorizontal{.53\paperwidth}{}{}%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.45\paperwidth,ht=3ex,dp=1.2ex,right]{title in head/foot}%
+      \scriptsize
+      \insertshorttitle\ \ {\footnotesize\insertframenumber}\hspace*{1em}%
+    \end{beamercolorbox}}%
+}
+
+% ------------------------------------------------------------------- macros
+% One-line takeaway under a figure or table.
+\newcommand{\takeaway}[1]{\par\vspace{10pt}\centering\small\textbf{#1}\par}
+
+% "Since <last review stage>" call-out, bottom-right above the footer.
+\newcommand{\sincebox}[1]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=south east,draw=sincered,text=sincered,align=center,inner sep=4pt,
+          font=\small] at ($(current page.south east)+(-0.3cm,1.1cm)$) {#1};
+  \end{tikzpicture}}
+
+% Figure that degrades to a labelled placeholder box if the file is missing, so the
+% template compiles before any real figures exist. Size by HEIGHT (see hep-slides).
+\newcommand{\slidefig}[2][0.66\textheight]{%
+  \IfFileExists{#2}{\includegraphics[height=#1]{#2}}%
+  {\fbox{\parbox[c][#1][c]{0.45\textwidth}{\centering TODO figure:\\ \texttt{\detokenize{#2}}}}}}
+
+% Table that degrades to a placeholder if the .tex file is missing.
+\newcommand{\slidetable}[1]{%
+  \IfFileExists{#1}{\input{#1}}%
+  {\fbox{TODO table: \texttt{\detokenize{#1}}}}}
+
+% Physics shorthand
+\newcommand{\ptmiss}{\ensuremath{p_T^{\mathrm{miss,\,no\,\mu}}}}
+\newcommand{\nlayers}{\ensuremath{n_{\mathrm{layers}}}}
+
+\title[Status update]{Disappearing Tracks: Status Update}
+\subtitle{OSUv2 NanoAOD reprocessing and background estimates}
+\author[M. Joyce]{Matt Joyce}
+\institute[OSU]{The Ohio State University}
+\date[\today]{Production status as of 2026-09-11 (checklist pass 18)}
+
+\begin{document}
+
+\begin{frame}[plain]\titlepage\end{frame}
+
+\section{Production}
+
+\begin{frame}{Reprocessing is done for 2025 and close for 2022--2023}
+  \centering\small
+  \begin{tabular}{p{0.36\textwidth}p{0.08\textwidth}p{0.28\textwidth}p{0.14\textwidth}}
+    \toprule
+    Production & Tasks & Cleared or complete & Outstanding \\
+    \midrule
+    2025 (CMSSW\_15) & 56 & 54 cleared & 2 \\
+    2022/23 data (CMSSW\_13) & 46 & 44 cleared & 2 \\
+    2022 EGamma (CMSSW\_13) & 5 & 3 cleared & 2 \\
+    2024 (CMSSW\_15) & 48 & 26 complete, 18 cleared & 22 running \\
+    2026 (CMSSW\_16) & 24 & 11 complete & 13 running \\
+    \bottomrule
+  \end{tabular}
+  \takeaway{``Cleared'' = verified against v1 (files, events, lumis); ``complete'' = CRAB finished}
+\end{frame}
+
+\begin{frame}{Six tasks carry known problems}
+  \small
+  \begin{tabular}{p{0.3\textwidth}p{0.55\textwidth}}
+    \toprule
+    Dataset & Problem \\
+    \midrule
+    \texttt{Muon0\_Run2025F\_v2} & Stuck at one slow site; fresh-submitted 2026-09-08 with the site blacklisted \\
+    \texttt{JetMET1\_Run2025E\_v1} & 99.8\%: one job blocked by a bad source file, accepted gap \\
+    \texttt{Muon1\_Run2023C\_v4} & 99.8\%: one job blocked by a bad source file, accepted gap \\
+    \texttt{JetMET1\_Run2023C\_v3} & Resubmitted; FatJet-bug recovery task built \\
+    \texttt{EGamma\_Run2022F} & 1.5\% complete, progressing \\
+    \texttt{EGamma\_Run2022G} & Not started \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+
+\begin{frame}{2024 and 2026 are running cleanly}
+  \begin{itemize}
+    \item 2024: 26 of 48 complete (up from 18 the previous pass)
+    \item 2026: 11 of 24 complete, no failures in the latest pass
+    \item Site problem at \texttt{T2\_CH\_CSCS} found and fixed by blacklisting it
+    \item 2026 era C is not being reprocessed (special runs, not used)
+    \item Four AMSB wino signal MC samples (700 GeV) are complete
+  \end{itemize}
+  \takeaway{Remaining failures are ordinary resubmit churn with no site pattern}
+\end{frame}
+
+\section{Selection}
+\begin{frame}{\texttt{highPurity} and a dE/dx cut are now in the selection}
+  \begin{itemize}
+    \item Required since 2026-09-17: the track \texttt{highPurity} bit
+    \item Plus a max/median dE/dx cut for \texttt{NLayers4} and \texttt{NLayers5} only
+    \item \texttt{NLayers6plus} tracks always pass the dE/dx term
+    \item \texttt{search\_region} yields verified end to end
+  \end{itemize}
+  \takeaway{Background numbers next are the 2026-09-17 \texttt{\_dedx} outputs}
+\end{frame}
+
+\section{Backgrounds}
+\begin{frame}{Fake tracks dominate at 4 layers, leptons at 6 or more}
+  \centering\footnotesize\renewcommand{\arraystretch}{0.8}
+  \input{../tables/generated/total_1.tex}
+  \vspace{-4pt}\takeaway{2022--2023, statistical uncertainties only}
+\end{frame}
+
+\begin{frame}{The 2024--2026 periods follow the same pattern}
+  \centering\footnotesize\renewcommand{\arraystretch}{0.8}
+  \input{../tables/generated/total_2.tex}
+  \takeaway{2025 is largest: $29.1 \pm 1.9$ (4 layers), $7.95 \pm 0.59$ ($\geq 6$); statistical only}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}{Next: systematics, closure, and a first datacard}
+  \begin{itemize}
+    \item Finish the outstanding datasets; clear 2024 and 2026 as they complete
+    \item Add systematic uncertainties (tables are statistical only)
+    \item Repeat closure tests under the current selection
+    \item Build the first datacard from \texttt{search\_region}
+  \end{itemize}
+  \takeaway{No limits yet: no datacard has been built}
+\end{frame}
+
+\end{document}

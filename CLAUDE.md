@@ -42,6 +42,15 @@ needs one; there's no real mount table to configure until then.
 TBD -- not yet decided whether style conventions (see the `python-style` skill) apply
 group-wide or should be set per analysis.
 
+## Group-wide references (`references/`)
+
+Read-only, gitignored clones of general HEP context that isn't specific to one
+analysis (see `references/README.md`). Currently:
+`references/OSU-Agentic-Analysis` -- the JFC framework's HEP analysis methodology,
+agent-behavior specs, and domain conventions (visualization standards, analysis
+technique guidance). Consult it for general analysis-practice questions; an
+analysis's own `CLAUDE.md` and skills win where they differ.
+
 ## Setup
 
 Run `scripts/setup.py` once per machine: checks/suggests LPC SSH aliases (including a

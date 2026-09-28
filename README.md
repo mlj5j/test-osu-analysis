@@ -5,14 +5,57 @@ conventions at the root, each analysis in its own directory with what's specific
 it. `disappearing_tracks/` is the first fully real instance of this pattern;
 `displaced_leptons/` and `milliqan/` are still outlines for whoever leads them next.
 
-## Getting started
+## Getting started (from a clean machine)
 
-1. Clone this repo.
-2. Run `scripts/setup.py` once per machine (LPC SSH aliases, `ref/` reference clones,
-   your LPC username, and disappearing_tracks' CMSSW work areas).
-3. Read the root [`CLAUDE.md`](CLAUDE.md) for group-wide conventions, then
-   [`disappearing_tracks/CLAUDE.md`](disappearing_tracks/CLAUDE.md) for the analysis
-   itself.
+1. **Clone the workspace repo.**
+
+   ```bash
+   git clone git@github.com:OSU-CMS/OSU-Analysis-Workstation.git
+   cd OSU-Analysis-Workstation
+   ```
+
+2. **Run the one-time setup script** (once per machine):
+
+   ```bash
+   python3 scripts/setup.py
+   ```
+
+   It asks before doing anything, and does three things:
+   - Checks `~/.ssh/config` for an LPC host alias (`cmslpc`) and offers to add a
+     second, SSH-multiplexed alias (conventionally `cmslpc-claude`) reserved for
+     Claude's own repeated automated connections, so they reuse one authenticated
+     connection instead of paying a fresh Kerberos/GSSAPI handshake per command.
+   - Clones the group-wide reference (`references/OSU-Agentic-Analysis`), then asks
+     which analyses you want (e.g. `disappearing_tracks`) and clones that analysis's
+     reference repos into `<analysis>/ref/` (e.g. `DisappTrks_Nano`, `DisappTrks`,
+     `OSUNano`, `PocketCoffea`). Anything already present is skipped.
+   - Asks for your LPC username, whether sshfs mounting works on this machine, and
+     (if you chose `disappearing_tracks`) which of the CMSSW_13/15/16
+     CRAB/NanoAOD-production work areas you already have. These are recorded in
+     `CLAUDE.local.md` (prose for Claude) and `.mount-config.local.sh` (shell
+     variables), both gitignored. A grid-proxy path is deliberately *not* recorded;
+     it's checked live each session.
+
+3. **(Optional) Create a fresh LPC working area.** If you need new CMSSW releases
+   rather than just cloning existing ones, run Claude Code from
+   `disappearing_tracks/` and use the `disapptrks-lpc-working-area-setup` skill. It
+   lays out the standard `AnalysisWorkstation/NanoProd_CMSSW_{13,15,16}/...` layout,
+   asks which releases you need (none is fine if you're PocketCoffea-only), and
+   whether to clone and bootstrap `DisappTrks_Nano` (`./setup_lpc.sh`) inside the
+   CMSSW_15 area. It defaults to the `main` branch; say so if you want another.
+
+4. **Create your grid proxy yourself.** This is never automated:
+
+   ```bash
+   voms-proxy-init --voms cms --valid 192:00
+   ```
+
+   Do it once you're ready to touch EOS or CRAB. The `lpc-remote-session` skill
+   checks for a live proxy each session rather than trusting a stored path.
+
+5. **Read the conventions.** The root [`CLAUDE.md`](CLAUDE.md) covers group-wide
+   conventions, then [`disappearing_tracks/CLAUDE.md`](disappearing_tracks/CLAUDE.md)
+   covers the analysis itself.
 
 ## How it's organized
 

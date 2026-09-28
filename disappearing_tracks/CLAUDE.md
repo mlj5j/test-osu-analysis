@@ -93,25 +93,32 @@ symlink, confirm with `git -C ref/DisappTrks_Nano branch --show-current` before 
 the checkout as authoritative if this note might be stale, and flag it to the user
 rather than silently assuming `main` if the branch has since changed or been merged.
 
-## Current investigation: adding `highPurity` to the signal selection
+## `highPurity`/dE/dx selection update (resolved 2026-09-17)
 
-We are evaluating whether to add the `isHighPurityTrack` requirement to the full
-disappearing-track selection. It is not part of the selection today. The open
-question is a tradeoff, not a settled cut: does it significantly reduce the
-fake-track background without an unacceptable cost to signal acceptance? Three
-skills each cover one side of this:
+The `isHighPurityTrack` requirement -- previously an open question, evaluated via the
+tradeoff below -- is now required in the production disappearing-track selection
+(`search_track_mask` in `DisappTrks_Nano`'s `src/disapptrks/selections.py`, used by
+the `search_region` PocketCoffea mode; see `disapptrks-datacards-limits`). A
+max/median dE/dx cut (`PROBE_TRACK_DEDX_MAX_OVER_MEDIAN`, `NLayers4`/`NLayers5` only)
+was added to the same selection alongside it, toggleable via
+`DISAPPTRKS_SEARCH_REQUIRE_DEDX_CUT` (default on) -- a genuine escape hatch, not just
+defensive boilerplate: at least one existing local dev signal MC file predates the
+`IsoTrackDeDxHit` branch entirely and needs it disabled.
 
-- `disapptrks-track-diagnostics` -- the `high_purity_study` Z-sideband study:
-  which track/dE/dx variables discriminate real tracks from fakes, as a proxy
-  for whether `highPurity` (or some refinement of it) would reject fakes.
-- `disapptrks-signal-acceptance` -- the `signal_acceptance` mode: how much
-  signal efficiency `highPurity` would cost, per layer bin.
-- `disapptrks-fake-track-background` -- the actual fake-track yield estimate;
-  the number that would need to go down for `highPurity` to be worth adding.
+Three skills document the tradeoff that led to this decision -- now historical
+context for *why* the selection is what it is, not an open question to help resolve:
 
-When a request references "the highPurity requirement," "investigating the
-fake-track background," or a signal/fake-rejection tradeoff, treat it as
-plausibly touching two or three of these skills together, not just one --
-check whether the user wants the sideband-rejection angle, the
-signal-acceptance-cost angle, the yield-estimate angle, or a combination
-before assuming which single skill answers it.
+- `disapptrks-track-diagnostics` -- the `high_purity_study` Z-sideband study: which
+  track/dE/dx variables discriminate real tracks from fakes.
+- `disapptrks-signal-acceptance` -- the `signal_acceptance` mode: how much signal
+  efficiency `highPurity` cost, per layer bin -- the number that was weighed here.
+- `disapptrks-fake-track-background` -- the fake-track yield estimate. **This estimate
+  predates the selection change above.** If asked about the current fake-track
+  background, check whether it has been re-derived under the new highPurity+dE/dx
+  selection, or flag plainly that it hasn't, rather than assuming the existing number
+  still applies unchanged.
+
+When a request references "the highPurity requirement" or a signal/fake-rejection
+tradeoff, it's most likely asking about *why* the selection is what it is, or about
+re-deriving a downstream number (like the fake-track estimate) under the new
+selection -- not asking Claude to help decide whether to add it.

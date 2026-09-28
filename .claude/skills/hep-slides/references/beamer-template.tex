@@ -1,0 +1,92 @@
+% Starter Beamer deck for HEP talks. 16:9, Madrid theme (ships with TeX Live, no
+% extra install). Copy next to a figures/ directory and edit.
+% Build: latexmk -pdf -interaction=nonstopmode -halt-on-error talk.tex
+\documentclass[aspectratio=169,12pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\graphicspath{{figures/}}
+
+% Frame titles state the takeaway; keep them to two lines at most.
+\setbeamerfont{frametitle}{size=\large}
+
+% One-line takeaway under a figure.
+\newcommand{\takeaway}[1]{\par\vspace{10pt}\centering\small\textbf{#1}\par}
+
+\title[Short title]{Full talk title}
+\subtitle{Analysis / channel}
+\author[Presenter]{Presenter Name}
+\institute[OSU]{The Ohio State University}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% ---------------------------------------------------------------- Motivation
+\section{Motivation}
+\begin{frame}{State the physics goal as a takeaway}
+  \begin{itemize}
+    \item At most ~4 bullets, ~2 lines each
+    \item Detail belongs in backup
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------ Single-figure frame
+\section{Results}
+\begin{frame}{Title states the result, not the topic}
+  \centering
+  % Size by HEIGHT so plots with/without colorbars match (see slide-figures.md).
+  \includegraphics[height=0.72\textheight]{example_plot.pdf}
+  \takeaway{One-line message the plot supports}
+\end{frame}
+
+% ----------------------------------------------------- Two-figure frame
+\begin{frame}{Compare two views side by side}
+  \centering
+  \includegraphics[height=0.62\textheight]{plot_a.pdf}\hfill
+  \includegraphics[height=0.62\textheight]{plot_b.pdf}
+  \takeaway{What the comparison shows}
+\end{frame}
+
+% ------------------------------------------------------------ Table frame
+\begin{frame}{Cutflow (values from the analysis output, not typed by hand)}
+  \centering
+  \normalsize   % tables stay at body size; only go \small if a table truly won't fit
+  % Free-text columns: use p{<width>} so they wrap (an l column overruns the slide).
+  \begin{tabular}{lrr}
+    \toprule
+    Selection & Data & MC \\
+    \midrule
+    % \input{tables/cutflow_body.tex}   % generate from the analysis output
+    Placeholder & -- & -- \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+
+% ---------------------------------------------------------------- Summary
+\begin{frame}{Summary and next steps}
+  \begin{itemize}
+    \item Key result, with its uncertainty
+    \item Concrete next step
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------- Backup
+\appendix
+\section{Backup}
+\begin{frame}[noframenumbering]{Backup: extra validation}
+  \centering
+  \includegraphics[height=0.72\textheight]{backup_plot.pdf}
+\end{frame}
+
+\end{document}

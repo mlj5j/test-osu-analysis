@@ -76,9 +76,11 @@ The Z sideband is enriched in fake candidates but is not truth-labeled. Treat
 long tails as candidate rejection handles, not proof of fakes. Before adding a
 cut, compare its sideband rejection with signal efficiency after the full
 selection -- for the specific case of the `highPurity` bit itself, that signal
-side is what `disapptrks-signal-acceptance` measures, and this tradeoff is a
-live, currently-undecided investigation (see the disappearing_tracks `CLAUDE.md`'s
-"Current investigation" section), not a hypothetical. Be especially cautious with
+side is what `disapptrks-signal-acceptance` measures. That tradeoff is now decided
+(`highPurity` plus a max/median dE/dx cut for `NLayers4`/`NLayers5` are required in the
+production selection; see the disappearing_tracks `CLAUDE.md`'s "`highPurity`/dE/dx
+selection update" section), so this study is the historical basis for it and the
+template for evaluating any further track-quality cut. Be especially cautious with
 upper dE/dx cuts because a slow charged signal particle can be genuinely highly
 ionizing. Hit-to-hit inconsistency (for example maximum/median or spread) may be
 safer than absolute ionization, but it still requires a signal scan.

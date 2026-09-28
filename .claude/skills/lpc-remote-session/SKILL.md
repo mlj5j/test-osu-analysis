@@ -138,3 +138,29 @@ done
 per-schedd breakdown in one call -- use that first; fall back to explicit `-name`
 queries, or ask the user, if the schedd list above goes stale.) Don't declare a job
 "stuck" or "not found" from a single schedd's empty result.
+
+## Gotchas seen in practice
+
+- **`ssh` suddenly fails to authenticate (`Permission denied (gssapi-...)`) or hangs**:
+  the Kerberos ticket expired. Ask the user to `kinit` -- don't retry. If they say they
+  did and `klist` still shows the old ticket, the ticket landed in a *different credential
+  cache* than the one your shell reads (e.g. a `KCM:` cache from their desktop session vs.
+  the `FILE:/tmp/krb5cc_<uid>` your tool's `KRB5CCNAME` points at; a conda env can change
+  which one `kinit` writes to). Compare the `Ticket cache:` line, and have them run
+  `kinit -c FILE:/tmp/krb5cc_<uid>` (a `KCM:` cache is often unreachable from a sandboxed
+  subprocess even when `klist` can read it).
+- **`REMOTE HOST IDENTIFICATION HAS CHANGED`**: the `cmslpc` alias round-robins across login
+  nodes with different host keys, so this recurs. It's benign here, but only remove the
+  stale line once the user has said so (`ssh-keygen -R cmslpc-el9.fnal.gov`, then reconnect
+  with `-o StrictHostKeyChecking=accept-new`).
+- **`bash -l script.sh arg1 arg2` clobbers positional parameters**: the LPC login-profile
+  scripts `set --`, so `$1`/`$2` come out wrong (one run wrote to a file literally named
+  `=`). Pass values as environment variables (`VAR=x bash -l script.sh`) instead.
+- **`pkill -f <pattern>` inside an `ssh` command kills its own shell** when the pattern
+  appears in that command line. Use `ps aux | grep '[p]attern' | awk '{print $2}' | xargs kill`.
+- **Backgrounding over ssh**: `ssh host "nohup cmd > log 2>&1 &"` keeps the ssh session
+  attached to the child's output and the tool call blocks; use `ssh -f host "nohup cmd >
+  log 2>&1 < /dev/null &"`, then poll the log with fresh short `ssh` calls.
+- **Never clean up with a bare glob** (`rm ... *.json`) in a working area you didn't
+  create. One did exactly that and deleted untracked estimate JSONs it had never listed. Name
+  the files you made, or work in a fresh subdirectory you can `rm -rf` whole.

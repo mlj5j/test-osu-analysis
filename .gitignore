@@ -10,6 +10,11 @@
 # ignored for real to avoid committing someone's personal absolute path.
 **/ref/
 
+# Group-wide read-only reference clones (cloned by scripts/setup.py); the
+# references/README.md itself stays tracked.
+references/*
+!references/README.md
+
 # CLAUDE.local.md and .mount-config.local.sh are also real here, not
 # placeholders: scripts/setup.py can write real per-machine data into them
 # (LPC username, CMSSW work-area paths), so they're ignored for real too. The root

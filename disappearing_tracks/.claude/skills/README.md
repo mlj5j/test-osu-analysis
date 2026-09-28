@@ -79,6 +79,26 @@ Analysis-specific skills go here.
   `disapptrks-lpc-execution`, which run PocketCoffea analysis jobs, not custom
   NanoAOD production.
 
+- `disapptrks-datacards-limits/` -- the analysis-specific layer for turning
+  DisappTrks_Nano/PocketCoffea output into CMS Combine datacards and the wino/higgsino
+  chargino exclusion (limit vs. mass/lifetime) plot: the legacy AMSB signal
+  grids/plot conventions in `ref/DisappTrks/LimitSetting` to migrate, and an explicit
+  flag that no search-region PocketCoffea config exists yet in `DisappTrks_Nano` to
+  build datacards from. Builds on the root `pocketcoffea-datacards-limits` skill for
+  the generic `Datacard`/`MCProcess`/`SystematicUncertainty` API and Combine
+  execution/plotting mechanics, and on `disapptrks-lpc-execution`/`lpc-remote-session`
+  for actually running anything.
+
+- `disapptrks-slides/` -- build a disappearing-tracks talk/status update on top of the
+  root `hep-slides` skill: which output/skill supplies each slide's numbers and
+  figures, a suggested structure for this analysis, and a checklist of provenance
+  flags (fake-track estimate predating the highPurity/dE/dx selection, no limits from
+  `search_region` yet, pre-`7c331f5` Pveto outputs, expected tau SS > OS, dE/dx
+  working point only for NLayers4/5, dissertation-vs-Nano numbers) to state on the
+  slide rather than leave implicit. Never produces numbers itself. Ships a
+  `references/talk-template.tex` Beamer template following the group's earlier
+  approval-talk layout (section nav footer, "since last review" boxes).
+
 For how `pocket_coffea/config.py`/`workflow.py` code in `DisappTrks_Nano` should
 itself be written (cuts, categories, histograms, weights) -- as opposed to which
 mode/CLI command to run -- see the root `pocketcoffea-conventions` skill, cross-linked

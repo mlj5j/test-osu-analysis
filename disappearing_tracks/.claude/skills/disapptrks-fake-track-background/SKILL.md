@@ -10,13 +10,14 @@ data-driven yield estimate for the fake-track background -- the number quoted in
 final result -- not the dE/dx rejection-cut study (`disapptrks-track-diagnostics`) or
 the charged-lepton background (`disapptrks-lepton-backgrounds`).
 
-**Active context:** this estimate is one side of the group's current `highPurity`
-investigation (see the disappearing_tracks `CLAUDE.md`'s "Current investigation"
-section) -- `highPurity` is not in the selection yet, and the question is whether
-adding it would reduce this yield enough to be worth its cost to signal acceptance
-(`disapptrks-signal-acceptance`). If asked to "improve" or "investigate" the fake-track
-background, a before/after `highPurity` comparison of this estimate is a natural thing
-to propose, not just re-running the estimate as-is.
+**Active context:** `highPurity` (plus a max/median dE/dx cut for `NLayers4`/`NLayers5`)
+is now required in the production selection (resolved 2026-09-17; see the
+disappearing_tracks `CLAUDE.md`'s "`highPurity`/dE/dx selection update" section and
+`search_track_mask` in `src/disapptrks/selections.py`). **This estimate predates that
+change.** If asked for the current fake-track background, check whether it has been
+re-derived under the highPurity+dE/dx selection, or say plainly that it hasn't --
+don't assume an existing number still applies. Re-deriving it under the new selection
+is a natural thing to propose, not just re-running the estimate as-is.
 
 If asked to actually run a job or produce the estimate (not just say what
 command would do it), this skill supplies the command but not how to execute
